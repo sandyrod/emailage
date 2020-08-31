@@ -17,5 +17,17 @@
             "email": "sandyrod@gmail.com"
         }
     ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "sandyrod\\emailage\\EmailageServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "sandyrod\\emailage\\": "src/"
+        }
+    },
     "minimum-stability": "stable"
 }

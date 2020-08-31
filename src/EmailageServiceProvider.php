@@ -1,9 +1,9 @@
 <?php
- 
+
 namespace sandyrod\emailage;
- 
+
 use Illuminate\Support\ServiceProvider;
- 
+
 class EmailageServiceProvider extends ServiceProvider
 {
     /**
@@ -11,19 +11,19 @@ class EmailageServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register() :void
     {
          $this->loadRoutesFrom(__DIR__.'/routes.php');
     }
- 
+
     /**
      * Bootstrap services.
      *
      * @return void
      */
-    public function boot()
+    public function boot() :void
     {
- 
+
     }
- 
+
 }
