@@ -9,68 +9,68 @@
     {
         /**
          * The allowed Format Values.
-         * 
+         *
          * This Array is used to Verify that if a format is changed, that the changed value is valid to Emailage.
          * @var ARRAY
          */
             private $allowed_formats = Array('json', 'xml');
-            
+
         /**
          * The Allowed Signature Methods.
-         * 
+         *
          * This Array is used to Verify that if a Signature Method is changed, that the changed value is valid to Emailage.
          * @var ARRAY
          */
             private $allowed_signature_methods = Array('sha1', 'sha256', 'sha384', 'sha512');
-            
+
         /**
          * The prefix to the URL.
          * @var STRING
          */
             private $URL_prefix = 'https://';
-            
+
         /**
          * The String appended to the URL if Sandbox == TRUE
          * @var STRING
          */
             private $URL_sandbox = 'sandbox';
-            
+
         /**
          * The String appended to the URL if Sandbox == FALSE
          * @var STRING
          */
             private $URL_live = 'api';
-            
+
         /**
          * The Apex of the domain name, used for building the full URL
          * @var STRING
          */
             private $URL_apex = 'emailage.com/';
-            
+
         /**
          * The Method Base that we attach to every full URL
          * @var STRING
          */
             private $URL_method_base = 'EmailAgeValidator/';
-            
+
         /**
          * What we append to the URL if setting_flag == TRUE
          * @var STRING
          */
             private $URL_method_flag = 'flag/';
-        
+
         /**
          * The Current Setting of Format
          * @var STRING
          */
             private $setting_format = 'json';
-            
+
         /**
          * The Current Setting for Signature Method
          * @var STRING
          */
             private $setting_signature_method = 'sha1';
-            
+
         /**
          * The Current Setting for if the SDK should connect to the sandbox or not.
          * @var BOOLEAN
@@ -81,25 +81,25 @@
          * @var BOOLEAN
          */
             private $setting_flag = FALSE;
-            
+
         /**
          * The Account SID provided to you from Emailage.
          * @var STRING
          */
             private $setting_account_sid;
-            
+
         /**
          * The Auth Token provided to you from Emailage.
          * @var STRING
          */
             private $setting_auth_token;
-            
+
         /**
          * The Current Setting for if the SDK should Validate the Response returned from Emailage
          * @var BOOLEAN
          */
             private $setting_validate_response = TRUE;
-            
+
         /**
          * The Current Setting for if the SDK should return the Emailage Response as a Parsed Object, or just as a String and allow you to deal with parsing the object
          * @var BOOLEAN
@@ -110,8 +110,8 @@
          * @var STRING
          */
             private $request_type = 'GET';
-            
-        
+
+
         /**
          * The Additional Parameters that the user can provide to the Query Calls
          * @var unknown
@@ -155,11 +155,11 @@
                 'custom1',
                 'custom2'
             );
-        
-            
+
+
         /**
          * Class Constructor, Sets up the Account SID and Auth Token, and any other settings if you provide them.
-         * 
+         *
          * @param STRING $account_sid
          * @param STRING $auth_token
          * @param BOOLEAN $sandbox
@@ -178,7 +178,7 @@
                 $this->changeSetting('validate_response', $validate_response);
                 $this->changeSetting('return_parsed_result', $return_parsed_result);
             }
-        
+
         /**
          * Call if you want to Flag an Email as Fraud.
          * @param STRING $email
@@ -189,7 +189,7 @@
             {
                 return $this->executeQuery($email, NULL, 'fraud', $fraudID);
             }
-        
+
         /**
          * Call if you want to Flag an Email as Good.
          * @param STRING $email
@@ -199,7 +199,7 @@
             {
                 return $this->executeQuery($email, NULL, 'good');
             }
-            
+
         /**
          * Call if you want to Flag an Email as Neutral.
          * @param STRING $email
@@ -209,7 +209,7 @@
             {
                 return $this->executeQuery($email, NULL, 'neutral');
             }
-        
+
         /**
          * Validate an Email Address
          * @param STRING $email
@@ -221,7 +221,7 @@
                 $acceptedParameters = $this->validateParametersArray($parameters);
                 return $this->executeQuery($email, $acceptedParameters);
             }
-        
+
         /**
          * Validate an IP Address
          * @param STRING $ip
@@ -233,7 +233,7 @@
                 $acceptedParameters = $this->validateParametersArray($parameters);
                 return $this->executeQuery($ip, $acceptedParameters);
             }
-        
+
         /**
          * Validates both an Email Address and an IP Address
          * @param STRING $email
@@ -246,17 +246,17 @@
                 $acceptedParameters = $this->validateParametersArray($parameters);
                 return $this->executeQuery($email . '+' . $ip, $acceptedParameters);
             }
-        
+
         /**
          * Validates all the Parameters the users has provided.
-         * 
+         *
          * If they are not valid Parameters it throws an error.
          * @param unknown $parameters
          */
             private function validateParametersArray($parameters)
             {
                 $validParameters = Array();
-                
+
                 foreach($parameters AS $paramName => $param)
                 {
                     $paramName = strtolower($paramName);
@@ -264,14 +264,14 @@
                     {
                         $validParameters[$paramName] = $param;
                     }
-                    else 
+                    else
                     {
                         $this->handleError('9000', "Invalid Paramater Provided: ($paramName)");
                     }
                 }
                 return $validParameters;
             }
-            
+
         /**
          * Creates the Parameters Array for Curl to Execute the Query
          * @param string $query
@@ -293,10 +293,10 @@
                     {
                         $this->setting_flag = FALSE;
                     }
-                    
+
                 // Get the Full URL
                 $URL = $this->getURL();
-                
+
                 /**
                  * Create an Array of Parameters
                  */
@@ -311,17 +311,17 @@
                  * Lets Generate our Signature based on the Parameters we already have setup.
                  */
                     $parameters['oauth_signature'] = $this->generateSig($parameters, $URL);
-                    
+
                 /**
                  * Lets add the rest of our Parameters.
-                 * 
+                 *
                  * You might be saying... Those are going to get sent through to Emailage, 
                  * but they will only get parsed through if their value is NOT NULL
                  */
                     $parameters['query'] = $query;
                     $parameters['flag'] = $flag;
                     $parameters['fraudcodeID'] = $fraudID;
-                
+
                 /**
                  * Lets Add in our Additional Parameters
                  */
@@ -329,16 +329,16 @@
                     {
                         $parameters = array_merge($parameters, $additionalParameters);
                     }
-                    
+
                 // Have Curl Execute the Call and Return the Results
                 $results = $this->execute($URL, $parameters);
-                
+
                 // Does the SDK need to Validate the Response?  If so, let's do it.
                 if($this->setting_validate_response)
                 {
                     $this->validateResponse($results);
                 }
-                
+
                 // Should we return the Results As Parsed or just as a String?
                 if($this->setting_return_parsed_result)
                 {
@@ -349,7 +349,7 @@
                     return $results;
                 }
             }
-        
+
         /**
          * Validates the Response, and if an Error has occured throws the error and error message.
          * @param Exception $response
@@ -358,9 +358,9 @@
             {
                 $errorNum = NULL;
                 $errorMessage = NULL;
-                
+
                 $parsed_results = $this->returnParsedResults($response);
-                
+
                 if($parsed_results->responseStatus->status == 'failed')
                 {
                     $errorNum = (int)$parsed_results->responseStatus->errorCode;
@@ -368,7 +368,7 @@
                     $this->handleError($errorNum, $errorMessage);
                 }
             }
-        
+
         /**
          * Parses the Results and Returns the parsed results.
          * @param string $response
@@ -386,7 +386,7 @@
                 }
                 return $parsed_results;
             }
-        
+
         /**
          * Parse's and returns the results as XML
          * @param string $response
@@ -396,7 +396,7 @@
             {
                 return simplexml_load_string($response);
             }
-        
+
         /**
          * Parse's and returns the results as JSON object
          * @param string $response
@@ -405,10 +405,10 @@
             private function parseJSON($response)
             {
                 $json_result = json_decode($response);
-                
+
                 // Lets check and see if JSON had an issue Decoding...
                 $error = json_last_error();
-                    
+
                 if($error != JSON_ERROR_NONE) // Looks like they did.  Let's throw an error based on the Error JSON had.
                 {
                     switch ($error) {
@@ -441,7 +441,7 @@
                 }
                 return $json_result;
             }
-        
+
         /**
          * Executes the CURL call and returns the results.
          * @param string $URL
@@ -452,13 +452,13 @@
             {
                 // Attach our Query Parameters to the URL
                 $URL .= '?' . http_build_query($parameters);
-                
+
                 $CH = curl_init($URL); // Initialize Curl
-                    
+
                 curl_setopt($CH, CURLOPT_RETURNTRANSFER, 1); // Force Curl to return the response
-    
+
                 $results = curl_exec($CH); // Do the Curl Call
-                
+
                 /**
                  * Lets make sure we had no Curl Error's, if we do, let's throw an exception.
                  */
@@ -468,7 +468,7 @@
                     }
                 return str_replace("\xEF\xBB\xBF", '', $results); //String Replace is clearing up some characters being sent from Emailage that json_decode doesn't like.
             }
-        
+
         /**
          * Creates and returns the Signature for EMAILAGE
          * @param array $parameters
@@ -481,14 +481,14 @@
                 $hash_Params[] = strtoupper($this->request_type); // ATM this is just GET
                 $hash_Params[] = urlencode($URL); // THE URL we are going to send the call to minus anything upto and after the ?
                 $hash_Params[] = urlencode(http_build_query($parameters)); // The Parameters we need to create the Hash.
-                
+
                 // Make and return the Hash.
                 return base64_encode(hash_hmac(strtolower($this->setting_signature_method), join('&', $hash_Params), $this->setting_auth_token . '&', TRUE));
             }
-        
+
         /**
          * Allow users to Change their Settings
-         * 
+         *
          * Throws errors if errors are found.
          * @param string $name
          * @param value $value
@@ -501,50 +501,50 @@
                     case 'auth_token':
                         // No Validation Needed ...
                     break;
-                    
+
                     case 'format':
                         if(!in_array($value, $this->allowed_formats))
                         {
                             $this->handleError('8000', "Unable to Change Format.  Format is invalid. ($value)");
                         }
                     break;
-                    
+
                     case 'return_parsed_result':
                         if(!is_bool($value))
                         {
                             $this->handleError('8005', "Unable to Return Parsed Results.  Value was not True or False");
                         }
                     break;
-                    
+
                     case 'sandbox':
                         if(!is_bool($value))
                         {
                             $this->handleError('8001', "Unable to Change Sandbox.  Value was not True or False");
                         }
                     break;
-                    
+
                     case 'signature_method':
                         if(!in_array(strtolower($value), $this->allowed_signature_methods))
                         {
                             $this->handleError('8003', "Unable to Change Signature Method.  Signature Method is invalid. ($value)");
                         }
                     break;
-                    
+
                     case 'validate_response':
                         if(!is_bool($value))
                         {
                             $this->handleError('8004', "Unable to Change Validate Response.  Value was not True or False");
                         }
                     break;
-                    
+
                     default:
                         $this->handleError('8100', "Unable to change ($name).  Unknown Setting. ($value)");
                     break;
                 }
-                
+
                 $this->saveSetting($name, $value);
             }
-        
+
         /**
          * Single function for handling errors if we want to change the process in the future.
          * @param int $errorNum
@@ -555,7 +555,7 @@
             {
                 throw new Exception($errorMessage, $errorNum);
             }
-        
+
         /**
          * Does the Actual Saving of the Setting to the class
          * @param string $name
@@ -566,7 +566,7 @@
                 $settingName = 'setting_' . $name;
                 $this->$settingName = $value;
             }
-        
+
         /**
          * Creates the the URL that we will send the call to.
          * @return string
@@ -574,7 +574,7 @@
             private function getURL()
             {
                 $URL = $this->URL_prefix;
-                
+
                 // Are we going to the sandbox or the live site?
                 if($this->setting_sandbox)
                 {
@@ -584,16 +584,16 @@
                 {
                     $URL .= $this->URL_live;
                 }
-                
+
                 // Lets add on the Apex and the method base
                 $URL .= '.' . $this->URL_apex . $this->URL_method_base;
-                
+
                 // Do we need to append the flag method to the url?
                 if($this->setting_flag)
                 {
                     $URL .= $this->URL_method_flag;
                 }
-                
+
                 return $URL;
             }
     }
