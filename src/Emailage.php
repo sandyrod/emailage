@@ -168,15 +168,15 @@
          * @param BOOLEAN $validate_response
          * @param BOOLEAN $return_parsed_result
          */
-            public function __construct($account_sid, $auth_token, $sandbox = TRUE, $format = 'json', $signature_method = 'sha1', $validate_response = TRUE, $return_parsed_result = TRUE)
+            public function __construct()
             {
-                $this->changeSetting('account_sid', $account_sid);
-                $this->changeSetting('auth_token', $auth_token);
-                $this->changeSetting('sandbox', $sandbox);
-                $this->changeSetting('format', $format);
-                $this->changeSetting('signature_method', $signature_method);
-                $this->changeSetting('validate_response', $validate_response);
-                $this->changeSetting('return_parsed_result', $return_parsed_result);
+                $this->changeSetting('account_sid', env('EMAILAGE_ACCOUNT_ID'));
+                $this->changeSetting('auth_token', env('EMAILAGE_AUTH_TOKEN'));
+                $this->changeSetting('sandbox', env('EMAILAGE_SANDBOX', TRUE));
+                $this->changeSetting('format', env('EMAILAGE_FORMAT', 'json'));
+                $this->changeSetting('signature_method', env('EMAILAGE_SIGNATURE_METHOD', 'sha1'));
+                $this->changeSetting('validate_response', env('EMAILAGE_VALIDATE_RESPONSE', TRUE));
+                $this->changeSetting('return_parsed_result', env('EMAILAGE_PARSED_RESULT', TRUE));
             }
 
         /**

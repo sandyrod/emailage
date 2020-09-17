@@ -25,7 +25,7 @@ class EmailageServiceProvider extends ServiceProvider
             return new Sdk($config);
         });
 
-        $this->app->alias('sandyrod', 'sandyrod\Emailage');
+        $this->app->alias('sandyrod', 'sandyrod\emailage');
     }
 
     /**
@@ -35,14 +35,7 @@ class EmailageServiceProvider extends ServiceProvider
      */
     public function boot() :void
     {
-        if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
-            $this->publishes(
-                [__DIR__.'/../config/emailage_config.php' => config_path('emailage.php')],
-                'emailage-config'
-            );
-        } elseif ($this->app instanceof LumenApplication) {
-            $this->app->configure('emailage');
-        }
+        
     }
 
     /**
@@ -52,7 +45,7 @@ class EmailageServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['sandyrod', 'sandyrod\Emailage'];
+        return ['sandyrod', 'sandyrod\emailage'];
     }
 
 }
