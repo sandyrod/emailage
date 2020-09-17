@@ -13,19 +13,7 @@ class EmailageServiceProvider extends ServiceProvider
      */
     public function register() :void
     {
-         $this->loadRoutesFrom(__DIR__.'/routes.php');
-         $this->mergeConfigFrom(
-            __DIR__.'/../config/emailage_config.php',
-            'aws'
-        );
-
-        $this->app->singleton('sandyrod', function ($app) {
-            $config = $app->make('config')->get('sandyrod');
-
-            return new Sdk($config);
-        });
-
-        $this->app->alias('sandyrod', 'sandyrod\emailage');
+        $this->loadRoutesFrom(__DIR__.'/routes.php');
     }
 
     /**
@@ -35,7 +23,7 @@ class EmailageServiceProvider extends ServiceProvider
      */
     public function boot() :void
     {
-        
+
     }
 
     /**
