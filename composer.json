@@ -21,7 +21,10 @@
         "laravel": {
             "providers": [
                 "sandyrod\\emailage\\EmailageServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Sandyrod": "sandyrod\\emailage\\EmailageFacade"
+            }
         }
     },
     "autoload": {
