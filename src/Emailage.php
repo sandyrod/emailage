@@ -5,6 +5,7 @@
      * @author jpitcher
      *
      */
+    use Exception;
     class Emailage
     {
         /**
@@ -172,7 +173,7 @@
             {
                 $this->changeSetting('account_sid', env('EMAILAGE_ACCOUNT_ID'));
                 $this->changeSetting('auth_token', env('EMAILAGE_AUTH_TOKEN'));
-                $this->changeSetting('sandbox', env('EMAILAGE_SANDBOX', TRUE));
+                $this->changeSetting('sandbox', env('EMAILAGE_SANDBOX', FALSE));
                 $this->changeSetting('format', env('EMAILAGE_FORMAT', 'json'));
                 $this->changeSetting('signature_method', env('EMAILAGE_SIGNATURE_METHOD', 'sha1'));
                 $this->changeSetting('validate_response', env('EMAILAGE_VALIDATE_RESPONSE', TRUE));
